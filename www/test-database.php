@@ -28,7 +28,7 @@ th, td {
 $db_host   = '192.168.56.12';
 $db_name   = 'fvision';
 $db_user   = 'webuser';
-$db_passwd = 'insecure_db_pw';
+$db_passwd = 'hello';
 
 $pdo_dsn = "mysql:host=$db_host;dbname=$db_name";
 
