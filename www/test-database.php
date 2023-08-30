@@ -41,6 +41,36 @@ while($row = $q->fetch()){
 }
 
 ?>
+
+<h2>Add a New Paper:</h2>
+<form method="post">
+  <label for="code">Paper Code:</label>
+  <input type="text" id="code" name="code" required><br>
+  
+  <label for="name">Paper Name:</label>
+  <input type="text" id="name" name="name" required><br>
+  <input type="submit" value="Add Paper">
+</form>
+
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $code = $_POST["code"];
+    $name = $_POST["name"];
+    
+    // Prepare and execute the INSERT query
+    $insert_query = "INSERT INTO papers (code, name) VALUES (:code, :name)";
+    $insert_statement = $pdo->prepare($insert_query);
+    $insert_statement->bindParam(":code", $code);
+    $insert_statement->bindParam(":name", $name);
+    
+    if ($insert_statement->execute()) {
+        echo "<p>New paper added successfully!</p>";
+    } else {
+        echo "<p>Failed to add paper.</p>";
+    }
+}
+?>
+
 </table>
 </body>
 </html>
