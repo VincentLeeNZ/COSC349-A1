@@ -32,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($row) {
             if ($row["usertype"] == "user") {
                 $_SESSION["username"] = $username;
-                header("location: userhome.php");
+                header("location: test-database.php");
                 exit();
             } elseif ($row["usertype"] == "admin") {
                 $_SESSION["username"] = $username;

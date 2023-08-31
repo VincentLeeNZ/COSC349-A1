@@ -16,14 +16,17 @@ th, td {
 </head>
 
 <body>
-<h1>Database test page</h1>
+<h1>Database test page for Users</h1>
 
-<p>Showing contents of papers table:</p>
+<p>Showing contents of products table:</p>
 
 <table border="1">
-<tr><th>Paper code</th><th>Paper name</th></tr>
+<tr><th>Product code</th><th>Product name</th><th>Price</th><th>Description</th></tr>
 
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
  
 $db_host   = '192.168.56.12';
 $db_name   = 'fvision';
@@ -34,43 +37,11 @@ $pdo_dsn = "mysql:host=$db_host;dbname=$db_name";
 
 $pdo = new PDO($pdo_dsn, $db_user, $db_passwd);
 
-$q = $pdo->query("SELECT * FROM papers");
+$q = $pdo->query("SELECT * FROM products");
 
 while($row = $q->fetch()){
-  echo "<tr><td>".$row["code"]."</td><td>".$row["name"]."</td></tr>\n";
+  echo "<tr><td>".$row["code"]."</td><td>".$row["name"]."</td><td>".$row["price"]."</td><td>".$row["description"]."</td></tr>\n";
 }
 
 ?>
 
-<h2>Add a New Paper:</h2>
-<form method="post">
-  <label for="code">Paper Code:</label>
-  <input type="text" id="code" name="code" required><br>
-  
-  <label for="name">Paper Name:</label>
-  <input type="text" id="name" name="name" required><br>
-  <input type="submit" value="Add Paper">
-</form>
-
-<?php
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $code = $_POST["code"];
-    $name = $_POST["name"];
-    
-    // Prepare and execute the INSERT query
-    $insert_query = "INSERT INTO papers (code, name) VALUES (:code, :name)";
-    $insert_statement = $pdo->prepare($insert_query);
-    $insert_statement->bindParam(":code", $code);
-    $insert_statement->bindParam(":name", $name);
-    
-    if ($insert_statement->execute()) {
-        echo "<p>New paper added successfully!</p>";
-    } else {
-        echo "<p>Failed to add paper.</p>";
-    }
-}
-?>
-
-</table>
-</body>
-</html>
