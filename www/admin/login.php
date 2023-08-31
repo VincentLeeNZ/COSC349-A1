@@ -1,5 +1,5 @@
 <?php
-$db_host = '192.168.56.13';
+$db_host = '192.168.56.12';
 $db_name = 'fvision';
 $db_user = 'webuser';
 $db_passwd = 'hello';
