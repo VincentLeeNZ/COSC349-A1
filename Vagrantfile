@@ -6,6 +6,7 @@
 # backwards compatibility). Please don't change it unless you know what
 # you're doing.
 Vagrant.configure("2") do |config|
+
   # The most common configuration options are documented and commented below.
   # For a complete reference, please see the online documentation at
   # https://docs.vagrantup.com.
@@ -58,36 +59,14 @@ config.vm.define "dbserver" do |dbserver|
   dbserver.vm.provision "shell", path: "build-dbserver-vm.sh"
 end
 
+config.vm.define "adminserver" do |adminserver|
+  adminserver.vm.hostname = "adminserver"
+  adminserver.vm.network "private_network", ip: "192.168.56.13"
+  adminserver.vm.synced_folder ".", "/vagrant", owner: "vagrant", group: "vagrant", mount_options: ["dmode=775,fmode=777"]
+  adminserver.vm.provision "shell", path: "build-adminserver-vm.sh"
 end
 
-  # Provider-specific configuration so you can fine-tune various
-  # backing providers for Vagrant. These expose provider-specific options.
-  # Example for VirtualBox:
-  #
-  # config.vm.provider "virtualbox" do |vb|
-  #   # Display the VirtualBox GUI when booting the machine
-  #   vb.gui = true
-  #
-  #   # Customize the amount of memory on the VM:
-  #   vb.memory = "1024"
-  # end
-  #
-  # View the documentation for the provider you are using for more
-  # information on available options.
+end
 
-  # Enable provisioning with a shell script. Additional provisioners such as
-  # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
-  # documentation for more information about their specific syntax and use.
-#   config.vm.provision "shell", inline: <<-SHELL
-#     apt-get update
-#     apt-get install -y apache2
 
-#     # Change VM's webserver's configuration to use shared folder.
-#     # (Look inside test-website.conf for specifics.)
-#     cp /vagrant/test-website.conf /etc/apache2/sites-available/
-#     # install our website configuration and disable the default
-#     a2ensite test-website
-#     a2dissite 000-default
-#     service apache2 reload
-#   SHELL
-# end
+
