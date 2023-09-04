@@ -12,12 +12,35 @@ $pdo_dsn = "mysql:host=$db_host;dbname=$db_name";
 $pdo = new PDO($pdo_dsn, $db_user, $db_passwd);
 
 $q = $pdo->query("SELECT * FROM products");
+
+// Initialize the cart in session if not already present
+if (!isset($_SESSION["cart"])) {
+    $_SESSION["cart"] = [];
+}
+
+// Handle adding products to the cart
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["product_code"])) {
+    $productCode = $_POST["product_code"];
+    
+    // Fetch the product details by code
+    $product_query = $pdo->prepare("SELECT * FROM products WHERE code = :code");
+    $product_query->bindParam(":code", $productCode);
+    $product_query->execute();
+    $product = $product_query->fetch();
+
+    if ($product) {
+        $_SESSION["cart"][] = $product;
+        echo "<p>Product '{$product["name"]}' added to cart.</p>";
+    } else {
+        echo "<p>Invalid product code.</p>";
+    }
+}
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Database test page for Users</title>
+    <title>Page for Users</title>
     <style>
         th {
             text-align: left;
@@ -62,7 +85,6 @@ $q = $pdo->query("SELECT * FROM products");
         }
     </style>
 </head>
-
 <body>
 <header>
     <h1>Database test page for Users</h1>
@@ -76,7 +98,26 @@ $q = $pdo->query("SELECT * FROM products");
         echo '<p><strong>Product code:</strong> ' . $row["code"] . '</p>';
         echo '<p><strong>Price:</strong> ' . $row["price"] . '</p>';
         echo '<p><strong>Description:</strong> ' . $row["description"] . '</p>';
+        echo '<form method="post">';
+        echo '<input type="hidden" name="product_code" value="' . $row["code"] . '">';
+        echo '<input type="submit" value="Add to Cart">';
+        echo '</form>';
         echo '</div>';
+    }
+    ?>
+
+    <h2>Your Shopping Cart:</h2>
+    <?php
+    if (count($_SESSION["cart"]) > 0) {
+        foreach ($_SESSION["cart"] as $cartItem) {
+            echo '<div class="product">';
+            echo '<h3>' . $cartItem["name"] . '</h3>';
+            echo '<p><strong>Price:</strong> ' . $cartItem["price"] . '</p>';
+            echo '<p><strong>Description:</strong> ' . $cartItem["description"] . '</p>';
+            echo '</div>';
+        }
+    } else {
+        echo '<p>Your cart is empty.</p>';
     }
     ?>
 </div>

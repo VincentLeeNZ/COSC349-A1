@@ -12,7 +12,6 @@ INSERT INTO products VALUES ('PD003','Product C', 9.99, 'Basic yet effective pro
 INSERT INTO products VALUES ('PD004','Product D', 49.99, 'Premium product D with exceptional performance.');
 
 
--- Create the login table
 CREATE TABLE IF NOT EXISTS login (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(255) NOT NULL,
@@ -20,6 +19,6 @@ CREATE TABLE IF NOT EXISTS login (
     usertype ENUM('user', 'admin') NOT NULL
 );
 
--- Insert the admin user
+
 INSERT INTO login (username, password, usertype) VALUES ('admin', 'admin', 'admin');
 INSERT INTO login (username, password, usertype) VALUES ('user', 'user', 'user');

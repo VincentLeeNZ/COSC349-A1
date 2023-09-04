@@ -1,3 +1,4 @@
+
 <?php
 session_start();
 
@@ -115,10 +116,10 @@ if (!isset($_SESSION["username"])) {
             <th>Product name</th>
             <th>Price</th>
             <th>Description</th>
+            <th>Action</th> 
         </tr>
 
         <?php
-        // Your existing PHP code for fetching and displaying table data goes here
         error_reporting(E_ALL);
         ini_set('display_errors', 1);
 
@@ -134,7 +135,14 @@ if (!isset($_SESSION["username"])) {
         $q = $pdo->query("SELECT * FROM products");
 
         while ($row = $q->fetch()) {
-            echo "<tr><td>" . $row["code"] . "</td><td>" . $row["name"] . "</td><td>" . $row["price"] . "</td><td>" . $row["description"] . "</td></tr>\n";
+            echo "<tr>";
+            echo "<td>" . $row["code"] . "</td>";
+            echo "<td>" . $row["name"] . "</td>";
+            echo "<td>" . $row["price"] . "</td>";
+            echo "<td>" . $row["description"] . "</td>";
+            echo '<td><form method="post"><input type="hidden" name="product_code" value="' . $row["code"] . '"><input type="submit" name="remove_product" value="Remove"></form></td>';
+            echo "</tr>\n";
+            echo "</tr>\n";
         }
         ?>
 
@@ -159,21 +167,34 @@ if (!isset($_SESSION["username"])) {
 
     <?php
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $code = $_POST["code"];
-        $name = $_POST["name"];
-        $price = $_POST["price"];
-        $description = $_POST["description"];
+        if (isset($_POST["remove_product"])) {
+            $code = $_POST["product_code"];
+        
+            $delete_query = "DELETE FROM products WHERE code = :code";
+            $delete_statement = $pdo->prepare($delete_query);
+            $delete_statement->bindParam(":code", $code);
 
-        // Prepare and execute the INSERT query
-        $insert_query = "INSERT INTO products (code, name, price, description) VALUES (:code, :name, :price, :description)";
-        $insert_statement = $pdo->prepare($insert_query);
-        $insert_statement->bindParam(":code", $code);
-        $insert_statement->bindParam(":name", $name);
-        $insert_statement->bindParam(":price", $price);
-        $insert_statement->bindParam(":description", $description);
-
-        if ($insert_statement->execute()) {
-            echo "<p>New product added successfully!</p>";
+            if ($delete_statement->execute()) {
+                echo "<p>Product removed successfully!</p>";
+            }
+        } else {
+            if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                $code = $_POST["code"];
+                $name = $_POST["name"];
+                $price = $_POST["price"];
+                $description = $_POST["description"];
+        
+                $insert_query = "INSERT INTO products (code, name, price, description) VALUES (:code, :name, :price, :description)";
+                $insert_statement = $pdo->prepare($insert_query);
+                $insert_statement->bindParam(":code", $code);
+                $insert_statement->bindParam(":name", $name);
+                $insert_statement->bindParam(":price", $price);
+                $insert_statement->bindParam(":description", $description);
+        
+                if ($insert_statement->execute()) {
+                    echo "<p>New product added successfully!</p>";
+                }
+            }
         }
     }
     ?>
